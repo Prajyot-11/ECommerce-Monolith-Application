@@ -83,15 +83,20 @@ public class CategoryServiceImpl implements CategoryService
     }
 
     @Override
-    public Category updateCategory(Category category, Long categoryId)
+    public CategoryDTO updateCategory(CategoryDTO categoryDTO, Long categoryId)
     {
         Optional<Category>savedCategoryOptional = categoryRepository.findById(categoryId);
 
         Category savedCategory = savedCategoryOptional
                 .orElseThrow(() -> new ResourceNotFoundException("Category", "categoryId", categoryId));
 
+        // Convert incoming DTO to Entity (required for DB operations)
+        Category category = modelMapper.map(categoryDTO, Category.class);
+
         category.setCategoryId(categoryId);
         savedCategory = categoryRepository.save(category);
-        return savedCategory;
+
+        // Convert saved Entity back to DTO (to return clean response)
+        return modelMapper.map(savedCategory, CategoryDTO.class);
     }
 }
