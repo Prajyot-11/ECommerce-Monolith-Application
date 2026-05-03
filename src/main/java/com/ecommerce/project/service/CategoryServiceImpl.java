@@ -8,6 +8,9 @@ import com.ecommerce.project.payload.CategoryResponse;
 import com.ecommerce.project.repository.CategoryRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,10 +28,18 @@ public class CategoryServiceImpl implements CategoryService
     private ModelMapper modelMapper;
 
     @Override
-    public CategoryResponse getAllCategories()
+    public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize)
     {
-        // Fetch all Category entities from database
-        List<Category> categories = categoryRepository.findAll();
+
+        Pageable pageDetails = PageRequest.of(pageNumber, pageSize);
+        Page<Category> categoryPage = categoryRepository.findAll(pageDetails);
+
+        // Fetch all Category entities from database --> before pagination
+        // List<Category> categories = categoryRepository.findAll();
+
+        // Instead of fetching all the categories, Now fetching them from
+        // categoryPage(Paginated object which is based on RequestParameter which user have provided)
+        List<Category> categories = categoryPage.getContent();
 
         // If no data found, throw custom exception i.e validation
         if(categories.isEmpty())
