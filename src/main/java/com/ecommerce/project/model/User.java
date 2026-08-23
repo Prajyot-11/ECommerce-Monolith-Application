@@ -37,9 +37,10 @@ public class User
 
     @NotBlank
     @Size(max = 120)
+    @Column(name = "password")
     private String password;
 
-    public User(String password, String email, String userName) {
+    public User(String userName, String email, String password) {
         this.password = password;
         this.email = email;
         this.userName = userName;
